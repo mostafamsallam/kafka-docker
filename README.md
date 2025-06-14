@@ -1,6 +1,6 @@
-# Kafka Development Environment with Docker Compose
+# Kafka Development Environment with Docker or Podman Compose
 
-This repository provides a complete Apache Kafka development environment using Docker Compose. It includes Kafka, Zookeeper, and **Kafka UI** for easy visual management and monitoring of your Kafka cluster through a web interface.
+This repository provides a complete Apache Kafka development environment using Docker or Podman Compose. It includes Kafka, Zookeeper, and **Kafka UI** for easy visual management and monitoring of your Kafka cluster through a web interface.
 
 ## What This Does
 
@@ -32,13 +32,18 @@ This Docker Compose setup creates a local Kafka cluster with the following compo
 
 ## Prerequisites
 
-- Docker installed on your system
-- Docker Compose installed on your system
+- **Docker** OR **Podman** installed on your system
+- Docker Compose (for Docker) or Podman Compose (for Podman) installed
 - At least 4GB of available RAM (recommended)
 
 ### Docker Installation
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/macOS)
 - Docker Engine (Linux)
+
+### Podman Installation
+- **Linux**: `sudo apt install podman` (Ubuntu) or `sudo dnf install podman` (RHEL/Fedora)
+- **macOS**: `brew install podman`
+- **Windows**: Download from [Podman official site](https://podman.io/getting-started/installation)
 
 ## How to Use
 
@@ -49,20 +54,34 @@ cd kafka-docker-dev-environment-with-ui
 ```
 
 ### 2. Start the Kafka Environment
+
+**Using Docker:**
 ```bash
 docker-compose -f kafka.yml up -d
 ```
 
+**Using Podman:**
+```bash
+podman compose -f kafka.yml up -d
+```
+
 This command will:
-- Download the required Docker images (if not already present)
+- Download the required Docker/Podman images (if not already present)
 - Start Zookeeper first
 - Start Kafka broker
 - Start Kafka UI
 
 ### 3. Verify the Setup
 Check that all services are running:
+
+**Using Docker:**
 ```bash
 docker-compose -f kafka.yml ps
+```
+
+**Using Podman:**
+```bash
+podman compose -f kafka.yml ps
 ```
 
 You should see all three services in "Up" status.
@@ -113,40 +132,69 @@ docker exec -it kafka kafka-topics --create \
   --replication-factor 1
 ```
 
+**Podman (Windows Command Prompt):**
+```cmd
+podman exec -it kafka kafka-topics --create --bootstrap-server localhost:9092 --topic my-topic --partitions 3 --replication-factor 1
+```
+
+**Podman (Linux/macOS):**
+```bash
+podman exec -it kafka kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic my-topic \
+  --partitions 3 \
+  --replication-factor 1
+```
+
 ### List Topics
 
-**Windows Command Prompt:**
+**Windows Command Prompt (Docker/Podman):**
 ```cmd
 docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
+podman exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
+
+# Podman
+podman exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
 ```
 
 ### Produce Messages
 
-**Windows Command Prompt:**
+**Windows Command Prompt (Docker/Podman):**
 ```cmd
 docker exec -it kafka kafka-console-producer --bootstrap-server localhost:9092 --topic my-topic
+podman exec -it kafka kafka-console-producer --bootstrap-server localhost:9092 --topic my-topic
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker exec -it kafka kafka-console-producer --bootstrap-server localhost:9092 --topic my-topic
+
+# Podman
+podman exec -it kafka kafka-console-producer --bootstrap-server localhost:9092 --topic my-topic
 ```
 
 ### Consume Messages
 
-**Windows Command Prompt:**
+**Windows Command Prompt (Docker/Podman):**
 ```cmd
 docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+podman exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic my-topic --from-beginning
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+
+# Podman
+podman exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic my-topic --from-beginning
 ```
 
 ### View Logs
@@ -155,22 +203,30 @@ docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 -
 ```cmd
 # View all services logs
 docker-compose -f kafka.yml logs
+podman compose -f kafka.yml logs
 
 # View specific service logs
 docker-compose -f kafka.yml logs kafka
-docker-compose -f kafka.yml logs zookeeper
-docker-compose -f kafka.yml logs kafka-ui
+podman compose -f kafka.yml logs kafka
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
-# View all services logs
+# Docker - View all services logs
 docker-compose -f kafka.yml logs
 
-# View specific service logs
+# Docker - View specific service logs
 docker-compose -f kafka.yml logs kafka
 docker-compose -f kafka.yml logs zookeeper
 docker-compose -f kafka.yml logs kafka-ui
+
+# Podman - View all services logs
+podman compose -f kafka.yml logs
+
+# Podman - View specific service logs
+podman compose -f kafka.yml logs kafka
+podman compose -f kafka.yml logs zookeeper
+podman compose -f kafka.yml logs kafka-ui
 ```
 
 ## Stopping the Environment
@@ -180,11 +236,16 @@ docker-compose -f kafka.yml logs kafka-ui
 **Windows Command Prompt:**
 ```cmd
 docker-compose -f kafka.yml stop
+podman compose -f kafka.yml stop
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker-compose -f kafka.yml stop
+
+# Podman
+podman compose -f kafka.yml stop
 ```
 
 ### Stop and Remove Containers
@@ -192,11 +253,16 @@ docker-compose -f kafka.yml stop
 **Windows Command Prompt:**
 ```cmd
 docker-compose -f kafka.yml down
+podman compose -f kafka.yml down
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker-compose -f kafka.yml down
+
+# Podman
+podman compose -f kafka.yml down
 ```
 
 ### Clean Up Everything (including volumes)
@@ -204,11 +270,16 @@ docker-compose -f kafka.yml down
 **Windows Command Prompt:**
 ```cmd
 docker-compose -f kafka.yml down -v
+podman compose -f kafka.yml down -v
 ```
 
 **Linux/macOS/Git Bash:**
 ```bash
+# Docker
 docker-compose -f kafka.yml down -v
+
+# Podman
+podman compose -f kafka.yml down -v
 ```
 
 ## Configuration Notes
@@ -228,9 +299,12 @@ ports:
 ```
 
 ### Connection Issues
-- Ensure Docker is running
+- Ensure Docker/Podman is running
+- For Podman on Windows/macOS: Make sure Podman machine is started (`podman machine start`)
 - Check that no firewall is blocking the ports
-- Verify all containers are healthy: `docker-compose -f kafka.yml ps`
+- Verify all containers are healthy: 
+  - Docker: `docker-compose -f kafka.yml ps`
+  - Podman: `podman compose -f kafka.yml ps`
 
 ### Command Syntax Issues
 - **Windows Command Prompt**: Use single-line commands (no line continuation)
